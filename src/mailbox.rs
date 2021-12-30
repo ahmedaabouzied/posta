@@ -13,18 +13,18 @@ pub struct Session {
     imap_session: imap::Session<TlsStream<TcpStream>>,
 }
 impl Session {
-    pub fn print_box_status(&mut self, mail_box_name: String) -> imap::error::Result<()> {
+    pub fn print_box_status(&mut self, mail_box_name: &str) -> imap::error::Result<()> {
         let mail_box = self.imap_session.select(mail_box_name).unwrap();
         let exists = mail_box.exists;
-        let recent = mail_box.recent;
-        let flags = mail_box.flags;
+        let unseen = self.imap_session.search("UNSEEN").unwrap().len();
+        let seen = self.imap_session.search("SEEN").unwrap().len();
         println!(
             "Status of inbox \n\
              ===============\n\
             * Total emails = {}\n\
-            * Recent emails = {}\n\
-            * Mailbox Flags = {:?}",
-            exists, recent, flags,
+            * Unseen emails = {}\n\
+            * Seen emails = {}",
+            exists, unseen, seen
         );
         Ok(())
     }

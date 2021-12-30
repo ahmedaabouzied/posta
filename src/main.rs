@@ -16,9 +16,11 @@ fn main() {
     let mut session = mail_box.connect().expect("failed to connect to mail box");
 
     if let Some(matches) = matches.subcommand_matches("status") {
-        let mail_box_name = matches.value_of("box").unwrap();
+        let mail_box_name = matches
+            .value_of("box")
+            .expect("error: status expects a box name as argument");
         session
-            .print_box_status(mail_box_name.to_string())
+            .print_box_status(mail_box_name)
             .expect("Failed to print mail box status");
     }
 
