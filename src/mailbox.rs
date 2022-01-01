@@ -1,5 +1,6 @@
 use std::net::TcpStream;
 
+use mailparse::{parse_headers, MailHeaderMap};
 use native_tls::TlsStream;
 
 /// Mailbox represents an email account.
@@ -31,6 +32,27 @@ impl Session {
 
     pub fn close(&mut self) -> imap::error::Result<()> {
         self.imap_session.logout()?;
+        Ok(())
+    }
+
+    pub fn list_emails(&mut self, mail_box_name: &str, _: bool) -> imap::error::Result<()> {
+        self.imap_session
+            .select(mail_box_name)
+            .expect("Failed to select mailbox");
+        let messages = self
+            .imap_session
+            .fetch(
+                "*:1",
+                "(UID FLAGS BODY.PEEK[HEADER.FIELDS (DATE FROM TO SUBJECT)])",
+            )
+            .unwrap();
+        for message in messages.into_iter().rev() {
+            let (headers, _) = parse_headers(message.header().unwrap()).unwrap();
+            println!("* Subject: {}", headers.get_first_value("Subject").unwrap());
+            println!("  * From: {}", headers.get_first_value("From").unwrap());
+            println!("  * Date: {}", headers.get_first_value("Date").unwrap());
+            println!("  * UID {}", message.uid.unwrap());
+        }
         Ok(())
     }
 }

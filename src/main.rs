@@ -4,6 +4,7 @@ mod mailbox;
 #[macro_use]
 extern crate clap;
 extern crate imap;
+
 use clap::App;
 
 fn main() {
@@ -22,6 +23,20 @@ fn main() {
         session
             .print_box_status(mail_box_name)
             .expect("Failed to print mail box status");
+    }
+
+    if let Some(matches) = matches.subcommand_matches("list") {
+        let mail_box_name = matches
+            .value_of("box")
+            .expect("error: list expects a box name as argument");
+
+        let short = match matches.value_of("short") {
+            Some(_) => true,
+            None => false,
+        };
+        session
+            .list_emails(mail_box_name, short)
+            .expect("Failed to list mailbox emails");
     }
 
     session.close().expect("Failed to logout from server");

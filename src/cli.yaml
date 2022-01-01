@@ -16,8 +16,16 @@ args:
 subcommands:
     - status:
         about: Gets the status of the mail box.
-        version: "1.3"
-        author: Ahmed Abouzied <email@aabouzied.com>
         args:
             - box:
-                help: The mail box to give the status of
+                help: The mail box to give the status of.
+    - list:
+        about: Lists the latest emails and prints header details and a subset of the body of the email.
+        args:
+            - box:
+                help: The mail box to list emails of.
+    - fetch:
+        about: Prints the full details of the email message.
+        args:
+            - id:
+                help: The unique ID of the email to fetch.
