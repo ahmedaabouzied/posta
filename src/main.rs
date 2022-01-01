@@ -39,5 +39,16 @@ fn main() {
             .expect("Failed to list mailbox emails");
     }
 
+    if let Some(matches) = matches.subcommand_matches("read") {
+        let mail_box_name = matches
+            .value_of("box")
+            .expect("error: list expects a box name as argument");
+
+        let uid = matches.value_of("id").expect("error: missing message UID");
+        session
+            .read_email(mail_box_name, uid)
+            .expect("Failed to list mailbox emails");
+    }
+
     session.close().expect("Failed to logout from server");
 }

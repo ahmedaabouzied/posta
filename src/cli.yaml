@@ -24,8 +24,10 @@ subcommands:
         args:
             - box:
                 help: The mail box to list emails of.
-    - fetch:
+    - read:
         about: Prints the full details of the email message.
         args:
+            - box:
+                help: The mail box to fetch email from.
             - id:
                 help: The unique ID of the email to fetch.
